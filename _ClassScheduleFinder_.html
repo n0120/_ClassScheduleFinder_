@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>時間割アプリ</title>
+  <style>
+    body {
+      font-family: "Arial", sans-serif;
+    }
+    select, button {
+      padding: 10px;
+      margin: 5px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+    <h1>時間割アプリ</h1>
+    <select id="day">
+      <option value="月">月曜日</option>
+      <option value="火">火曜日</option>
+      <option value="水">水曜日</option>
+      <option value="木">木曜日</option>
+      <option value="金">金曜日</option>
+    </select>
+    <select id="grade">
+      <option value="1年生">1年生</option>
+      <option value="2年生">2年生</option>
+      <option value="3年生">3年生</option>
+    </select>
+    <button onclick="showTimetable()">時間割を表示</button>
+    <table id="timetable">
+      <thead>
+        <tr>
+          <th>時限</th>
+          <th>授業名</th>
+          <th>担当教員</th>
+          <th>教室</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+  <script>
+    let data = {};
+
+    function fetchData() {
+      const url = 'https://raw.githubusercontent.com/team-osaka-hightech/CampusLifeInfo/main/timetableweek.json';
+      
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(jsonData => {
+          data = jsonData;
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    fetchData();
+
+    function showTimetable() {
+      const day = document.getElementById("day").value;
+      const grade = document.getElementById("grade").value;
+      const timetable =
+      document.getElementById("timetable").getElementsByTagName("tbody")[0];
+      timetable.innerHTML = "";
+
+      if (data[day] && data[day][grade]) {
+        const schedule = data[day][grade];
+        for (const period in schedule) {
+          const row = timetable.insertRow();
+          const cellPeriod = row.insertCell();
+          const cellClassName = row.insertCell();
+          const cellTeacher = row.insertCell();
+          const cellClassroom = row.insertCell();
+
+          cellPeriod.innerText = period;
+          cellClassName.innerText = schedule[period]["授業名"];
+          cellTeacher.innerText = schedule[period]["担当教員"];
+          cellClassroom.innerText = schedule[period]["教室"];
+        }
+      } else {
+        const row = timetable.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 4;
+        cell.innerText = "時間割がありません";
+      }
+    }
+  </script>
+</body>
+</html>
