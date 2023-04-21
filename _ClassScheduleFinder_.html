@@ -4,95 +4,106 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>時間割アプリ</title>
+  <!-- スタイルの定義 -->
   <style>
+    /* フォントファミリー設定 */
     body {
       font-family: "Arial", sans-serif;
     }
+    /* セレクトボックスとボタンのスタイル設定 */
     select, button {
       padding: 10px;
       margin: 5px;
     }
+    /* テーブルのスタイル設定 */
     table {
       border-collapse: collapse;
       width: 100%;
       margin-top: 20px;
-      table-layout: fixed; /* 追加 */
+      table-layout: fixed;
     }
+    /* セルのスタイル設定 */
     th, td {
       border: 1px solid #ccc;
       padding: 10px;
       text-align: center;
-      word-wrap: break-word; /* 追加 */
+      word-wrap: break-word;
     }
+    /* ヘッダーセルのスタイル設定 */
     th {
       background-color: #f2f2f2;
       font-weight: bold;
     }
-    /* 追加 */
+    /* 各列の幅設定 */
     .period {
       width: 10%;
     }
-    .className, .teacher, .classroom {
-      width: 30%;
+    .className {
+      width: 50%;
+    }
+    .teacher, .classroom {
+      width: 20%;
     }
   </style>
 </head>
 <body>
-    <h1>時間割アプリ</h1>
-    <select id="day">
-      <option value="月">月曜日</option>
-      <option value="火">火曜日</option>
-      <option value="水">水曜日</option>
-      <option value="木">木曜日</option>
-      <option value="金">金曜日</option>
-    </select>
-    <select id="grade">
-      <option value="1年生">1年生</option>
-      <option value="2年生">2年生</option>
-      <option value="3年生">3年生</option>
-    </select>
-    <button onclick="showTimetable()">時間割を表示</button>
-    <table id="timetable">
-      <thead>
-        <tr>
-          <th>時限</th>
-          <th>授業名</th>
-          <th>担当教員</th>
-          <th>教室</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+  <h1>TimeTable Navigator</h1>
 
+  <!-- 曜日と学年の選択 -->
+  <select id="day">
+    <option value="月">月曜日</option>
+    <option value="火">火曜日</option>
+    <option value="水">水曜日</option>
+    <option value="木">木曜日</option>
+    <option value="金">金曜日</option>
+  </select>
+
+  <select id="grade">
+    <option value="1年生">1年生</option>
+    <option value="2年生">2年生</option>
+    <option value="3年生">3年生</option>
+  </select>
+
+  <!-- 時間割を表示するボタン -->
+  <button onclick="showTimetable()">時間割を表示</button>
+
+  <!-- 時間割テーブル -->
+  <table id="timetable">
+    <thead>
+      <tr>
+        <th class="period">時限</th>
+        <th class="className">授業名</th>
+        <th class="teacher">担当教員</th>
+        <th class="classroom">教室</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <!-- スクリプトの定義 -->
   <script>
+    // JSONデータを格納する変数
     let data = {};
 
+    // JSONデータを外部URLから取得する関数
     function fetchData() {
       const url = 'https://raw.githubusercontent.com/team-osaka-hightech/CampusLifeInfo/main/timetableweek.json';
-      
       fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(jsonData => {
-          data = jsonData;
+        .then(response => response.json())
+        .then(json => {
+          data = json;
         })
         .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
+          console.error('Error fetching data:', error);
         });
     }
 
-    fetchData();
-
+    // 時間割を表示する関数
     function showTimetable() {
       const day = document.getElementById("day").value;
       const grade = document.getElementById("grade").value;
-      const timetable =
-      document.getElementById("timetable").getElementsByTagName("tbody")[0];
+      const timetable = document.getElementById("timetable").getElementsByTagName("tbody")[0];
       timetable.innerHTML = "";
 
       if (data[day] && data[day][grade]) {
@@ -103,6 +114,12 @@
           const cellClassName = row.insertCell();
           const cellTeacher = row.insertCell();
           const cellClassroom = row.insertCell();
+
+          // 各列の幅設定クラスを適用
+          cellPeriod.classList.add("period");
+          cellClassName.classList.add("className");
+          cellTeacher.classList.add("teacher");
+          cellClassroom.classList.add("classroom");
 
           cellPeriod.innerText = period;
           cellClassName.innerText = schedule[period]["授業名"];
@@ -116,6 +133,9 @@
         cell.innerText = "時間割がありません";
       }
     }
+
+    // データ取得関数を呼び出し
+    fetchData();
   </script>
 </body>
 </html>
