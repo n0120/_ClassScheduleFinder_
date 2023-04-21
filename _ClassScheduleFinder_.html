@@ -50,7 +50,7 @@
   <h1>TimeTable Navigator</h1>
 
   <!-- 曜日と学年の選択 -->
-  <select id="day">
+  <select id="day" onchange="showTimetable()">
     <option value="月">月曜日</option>
     <option value="火">火曜日</option>
     <option value="水">水曜日</option>
@@ -58,14 +58,11 @@
     <option value="金">金曜日</option>
   </select>
 
-  <select id="grade">
+  <select id="grade" onchange="showTimetable()">
     <option value="1年生">1年生</option>
     <option value="2年生">2年生</option>
     <option value="3年生">3年生</option>
   </select>
-
-  <!-- 時間割を表示するボタン -->
-  <button onclick="showTimetable()">時間割を表示</button>
 
   <!-- 時間割テーブル -->
   <table id="timetable">
