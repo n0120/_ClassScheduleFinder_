@@ -16,15 +16,24 @@
       border-collapse: collapse;
       width: 100%;
       margin-top: 20px;
+      table-layout: fixed; /* 追加 */
     }
     th, td {
       border: 1px solid #ccc;
       padding: 10px;
       text-align: center;
+      word-wrap: break-word; /* 追加 */
     }
     th {
       background-color: #f2f2f2;
       font-weight: bold;
+    }
+    /* 追加 */
+    .period {
+      width: 10%;
+    }
+    .className, .teacher, .classroom {
+      width: 30%;
     }
   </style>
 </head>
